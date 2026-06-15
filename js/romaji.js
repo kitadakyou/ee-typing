@@ -39,6 +39,10 @@ const TABLE = {
   ゃ: ['xya', 'lya'], ゅ: ['xyu', 'lyu'], ょ: ['xyo', 'lyo'], ゎ: ['xwa', 'lwa'],
   // 長音
   ー: ['-'],
+  // 句読点・記号（非 Shift キー）
+  '、': [','], '。': ['.'], '「': ['['], '」': [']'], '・': ['/'],
+  // 記号（US 配列では Shift＋キー）：！=Shift+1 ？=Shift+/ （=Shift+9 ）=Shift+0
+  '！': ['!'], '？': ['?'], '（': ['('], '）': [')'],
 
   // ===== 拗音（2かな。canonical は訓令式） =====
   きゃ: ['kya'], きゅ: ['kyu'], きょ: ['kyo'],
@@ -284,6 +288,20 @@ function runSelfTest() {
     ['accept', 'ふぁ', 'huxa'],
     ['accept', 'てぃ', 'thi'],
     ['accept', 'ゔぁ', 'va'],
+    // 句読点・記号
+    ['accept', '、', ','],
+    ['accept', '。', '.'],
+    ['accept', '「', '['],
+    ['accept', '」', ']'],
+    ['accept', '・', '/'],
+    ['accept', '！', '!'],
+    ['accept', '？', '?'],
+    ['accept', '（', '('],
+    ['accept', '）', ')'],
+    ['accept', 'いうな！', 'iuna!'], // Shift 記号＋かな
+    ['accept', 'ほん。', 'honn.'], // 句点直前の語末は nn
+    ['accept', '「こんにちは」', '[konnnichiha]'], // 括弧＋かな混在
+    ['accept', 'あめ、ゆき', 'ame,yuki'], // 読点を挟む（直前 め は単独 n 無関係）
   ];
   let pass = 0;
   let fail = 0;

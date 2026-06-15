@@ -4,19 +4,15 @@ import { renderKeyboard, highlightKeys } from './keyboard.js';
 import { renderHands, highlightFinger } from './hands.js';
 import { createEngine } from './romaji.js';
 import { createCodeEngine } from './code-engine.js';
-import { WORDS, shuffled } from './words.js';
+import { PASSAGES, packPassages } from './words.js';
 import { CODE_POOLS, LANG_LABELS, packFunctions } from './code-words.js';
 import { createStats } from './stats.js';
 import {
-  KEY_ROWS,
-  KEY_TO_FINGER,
   US_KEY_ROWS,
   US_CHAR_TO_KEY,
   shiftKeyFor,
   shiftFingerFor,
 } from './layout.js';
-
-const SET_SIZE = 5; // 日本語モードの1セット問題数
 
 // ---- DOM 参照 ----
 const screens = {
@@ -82,9 +78,9 @@ function startSet(m, l) {
     codeSectionEl.hidden = false;
   } else {
     engine = romajiEngine;
-    queue = shuffled(WORDS).slice(0, SET_SIZE);
-    renderKeyboard(kbEl, KEY_ROWS);
-    kbEl.classList.remove('is-us');
+    queue = packPassages(PASSAGES);
+    renderKeyboard(kbEl, US_KEY_ROWS, { singleLabel: true }); // US 配列・1段ラベル
+    kbEl.classList.add('is-us');
     boardEl.hidden = false;
     codeSectionEl.hidden = true;
   }
@@ -144,9 +140,19 @@ function updateGuide() {
       highlightFinger(info.finger);
     }
   } else {
-    highlightKeys(engine.nextChars());
+    // 日本語も US 配列で点灯。
     const key = engine.expectedKey();
-    highlightFinger(key ? KEY_TO_FINGER[key] : null);
+    const info = key != null ? US_CHAR_TO_KEY[key] : null;
+    if (info && info.shift) {
+      // Shift 記号（！？（）など）: ベースキー＋逆手 Shift、指もベース＋逆手小指の2本
+      highlightKeys([info.keyId, shiftKeyFor(info.finger)]);
+      highlightFinger([info.finger, shiftFingerFor(info.finger)]);
+    } else {
+      // 非 Shift（かな・「」、。/）: 複数仮説のキーをまとめて点灯
+      const keyIds = engine.nextChars().map((c) => (US_CHAR_TO_KEY[c] ? US_CHAR_TO_KEY[c].keyId : c));
+      highlightKeys(keyIds);
+      highlightFinger(info ? info.finger : null);
+    }
   }
 }
 
@@ -178,7 +184,7 @@ function finishSet() {
 }
 
 function showResult(s) {
-  const langText = s.mode === 'code' ? LANG_LABELS[s.lang] : '日本語ローマ字';
+  const langText = s.mode === 'code' ? LANG_LABELS[s.lang] : '日本語（長文）';
   el.resultLang.textContent = `モード: ${langText}`;
   document.getElementById('result-rank').textContent = s.rank;
   document.getElementById('result-score').textContent = s.score;
@@ -245,12 +251,8 @@ document.addEventListener('keydown', (e) => {
     }
   } else {
     const exp = engine.expectedKey();
-    if (mode === 'code') {
-      const info = exp != null ? US_CHAR_TO_KEY[exp] : null;
-      stats.addMiss(exp, info ? info.finger : undefined);
-    } else {
-      stats.addMiss(exp);
-    }
+    const info = exp != null ? US_CHAR_TO_KEY[exp] : null;
+    stats.addMiss(exp, info ? info.finger : undefined);
     updateLiveAcc();
     doFlash();
   }
