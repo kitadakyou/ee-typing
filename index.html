@@ -14,13 +14,18 @@
     <!-- ===== スタート画面 ===== -->
     <section id="screen-start" class="screen is-active">
       <h1 class="start-title">タイピング練習</h1>
-      <p class="start-lead">お題の文をローマ字で打ちます。全 <span id="start-count">5</span> 問。</p>
+      <p class="start-lead">モードを選んでスタート。</p>
+      <div class="mode-select">
+        <button class="btn-mode" type="button" data-mode="romaji">日本語ローマ字</button>
+        <button class="btn-mode" type="button" data-mode="code" data-lang="csharp">C#</button>
+        <button class="btn-mode" type="button" data-mode="code" data-lang="typescript">TypeScript</button>
+      </div>
       <ul class="start-notes">
         <li><strong>IME をオフ（直接入力）</strong>にしてください。</li>
-        <li>打ち方は自由です（し=<code>si</code>/<code>shi</code>、っ=重ね/<code>xtu</code>、ん=<code>nn</code> など何でも正解）。</li>
+        <li>日本語は打ち方自由（し=<code>si</code>/<code>shi</code>、ん=<code>nn</code> など何でも正解）。</li>
+        <li>コードは <strong>US 配列</strong>。行頭インデントは自動、行末で <code>Enter</code> を打ちます。</li>
         <li>最初の1打で計測が始まります。</li>
       </ul>
-      <button id="btn-start" class="btn-primary" type="button">スタート（または Space / Enter）</button>
     </section>
 
     <!-- ===== プレイ画面 ===== -->
@@ -30,13 +35,19 @@
         <span id="live-acc" class="live-acc">正確率 100%</span>
       </div>
 
-      <!-- お題パネル -->
-      <section class="board" aria-label="お題">
+      <!-- お題パネル（日本語ローマ字） -->
+      <section id="board" class="board" aria-label="お題">
         <p id="display" class="display"></p>
         <p id="reading" class="reading"></p>
         <p id="romaji" class="romaji">
           <span class="typed" id="romaji-typed"></span><span class="rest" id="romaji-rest"></span>
         </p>
+      </section>
+
+      <!-- コードパネル（プログラミングモード） -->
+      <section id="code-section" class="code-wrap" aria-label="コード" hidden>
+        <p id="code-title" class="code-title"></p>
+        <pre class="code-view"><code class="typed" id="code-typed"></code><code class="cursor" id="code-cursor"></code><code class="rest" id="code-rest"></code></pre>
       </section>
 
       <!-- キーボード -->
@@ -53,6 +64,7 @@
     <!-- ===== 結果画面 ===== -->
     <section id="screen-result" class="screen">
       <h2 class="result-title">結果</h2>
+      <p id="result-lang" class="result-lang"></p>
       <div class="result-rank">
         <span class="rank-label">ランク</span>
         <span id="result-rank" class="rank-value">A</span>

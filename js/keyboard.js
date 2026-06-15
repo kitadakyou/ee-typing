@@ -3,11 +3,11 @@ import { KEY_ROWS } from './layout.js';
 
 let keyEls = {}; // key文字 -> ボタン要素
 
-// container にキーボードを描画する
-export function renderKeyboard(container) {
+// container にキーボードを描画する。rows を渡せば別レイアウト（US 配列など）も描ける。
+export function renderKeyboard(container, rows = KEY_ROWS) {
   container.innerHTML = '';
   keyEls = {};
-  for (const row of KEY_ROWS) {
+  for (const row of rows) {
     const rowEl = document.createElement('div');
     rowEl.className = 'kb-row';
     for (const k of row) {
@@ -16,7 +16,20 @@ export function renderKeyboard(container) {
       keyEl.dataset.finger = k.finger;
       keyEl.dataset.key = k.key;
       if (k.home) keyEl.classList.add('is-home'); // F/J のホームポジション印
-      keyEl.textContent = k.label;
+      if (k.wide) keyEl.classList.add('is-wide'); // Shift / Enter / Space
+      if (k.shift) {
+        // 2段ラベル（上=シフト記号、下=非シフト文字）
+        keyEl.classList.add('has-shift');
+        const sh = document.createElement('span');
+        sh.className = 'kb-shift';
+        sh.textContent = k.shiftLabel;
+        const base = document.createElement('span');
+        base.className = 'kb-base';
+        base.textContent = k.label;
+        keyEl.append(sh, base);
+      } else {
+        keyEl.textContent = k.label;
+      }
       rowEl.appendChild(keyEl);
       keyEls[k.key] = keyEl;
     }

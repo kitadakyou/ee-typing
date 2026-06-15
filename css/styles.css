@@ -112,6 +112,59 @@ html, body {
   box-shadow: 0 0 0 2px rgba(240, 160, 32, 0.25);
 }
 
+/* US 配列: 段ごとのズレは無効化し、幅広キーで自然に揃える */
+.keyboard.is-us .kb-row { padding-left: 0; }
+/* 2段ラベルのキー（上=シフト記号 / 下=非シフト文字） */
+.kb-key.has-shift {
+  flex-direction: column;
+  gap: 1px;
+  font-size: 11px;
+  line-height: 1.05;
+}
+.kb-key .kb-shift { color: #aaa; }
+.kb-key .kb-base { color: #777; }
+.kb-key.is-next .kb-shift,
+.kb-key.is-next .kb-base { color: #fff; }
+/* 幅広キー（Shift / Enter / Space） */
+.kb-key.is-wide {
+  width: auto;
+  min-width: 58px;
+  padding: 0 10px;
+  font-size: 11px;
+}
+.keyboard.is-us .kb-row:last-child .kb-key.is-wide { min-width: 220px; }
+
+/* ===== コードパネル（プログラミングモード） ===== */
+.code-wrap {
+  background: #fbfbfb;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 18px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.code-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.code-view {
+  margin: 0;
+  max-height: 320px;
+  overflow: auto;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre;
+  tab-size: 4;
+}
+.code-view .typed { color: #bdbdbd; }
+.code-view .rest { color: var(--ink); }
+.code-view .cursor {
+  background: var(--orange);
+  color: #fff;
+  border-radius: 2px;
+}
+
 /* ===== 両手 ===== */
 .hands-wrap { margin-top: 18px; }
 .hands-svg { width: 100%; height: auto; display: block; }
@@ -177,6 +230,37 @@ html, body {
   border-radius: 4px;
   padding: 0 5px;
   font-size: 13px;
+}
+
+/* ===== スタート画面: モード選択 ===== */
+.mode-select {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto 24px;
+}
+.btn-mode {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: 1px solid #d8870f;
+  background: linear-gradient(var(--orange), #e1901a);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(240, 160, 32, 0.3);
+}
+.btn-mode:hover { filter: brightness(1.05); }
+.btn-mode:active { transform: translateY(1px); }
+
+/* ===== 結果画面: 言語ラベル ===== */
+.result-lang {
+  margin: 0 0 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-soft);
 }
 
 /* ===== プレイ画面の上部バー ===== */

@@ -1,7 +1,7 @@
 // 集計・スコア・苦手キー/指。
 import { KEY_TO_FINGER, FINGER_NAMES } from './layout.js';
 
-export function createStats() {
+export function createStats(meta = {}) {
   let correct = 0;
   let miss = 0;
   let startTime = null;
@@ -20,13 +20,14 @@ export function createStats() {
   }
 
   // 誤打。expectedKey = engine.expectedKey()（canonical な期待キー1つ）。
-  function addMiss(expectedKey) {
+  // finger を渡せばそれを使い、無ければ KEY_TO_FINGER から引く（コードモードの記号用）。
+  function addMiss(expectedKey, finger) {
     ensureStarted();
     miss++;
     if (expectedKey) {
       keyMiss[expectedKey] = (keyMiss[expectedKey] || 0) + 1;
-      const finger = KEY_TO_FINGER[expectedKey];
-      if (finger) fingerMiss[finger] = (fingerMiss[finger] || 0) + 1;
+      const fg = finger || KEY_TO_FINGER[expectedKey];
+      if (fg) fingerMiss[fg] = (fingerMiss[fg] || 0) + 1;
     }
   }
 
@@ -54,6 +55,8 @@ export function createStats() {
       wpm: Math.round(wpm),
       score,
       rank,
+      mode: meta.mode || 'romaji',
+      lang: meta.lang || null,
       weakKeys: topEntries(keyMiss, 5),
       weakFingers: topFingers(fingerMiss, 3),
     };
@@ -76,7 +79,14 @@ function topEntries(map, n) {
   return Object.entries(map)
     .sort((a, b) => b[1] - a[1])
     .slice(0, n)
-    .map(([key, count]) => ({ label: key.toUpperCase(), count }));
+    .map(([key, count]) => ({ label: keyLabel(key), count }));
+}
+
+// 表示用のキーラベル（空白・改行は読めるように）。
+function keyLabel(key) {
+  if (key === ' ') return 'Space';
+  if (key === '\n') return 'Enter';
+  return key.length === 1 ? key.toUpperCase() : key;
 }
 
 function topFingers(map, n) {

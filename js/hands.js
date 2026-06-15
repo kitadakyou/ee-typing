@@ -51,12 +51,18 @@ export function renderHands(container) {
   </svg>`;
 }
 
-// 指コードを受け取り該当の指を点灯。null で全消灯。
+// 指コード（または配列）を受け取り該当の指を点灯。null/[] で全消灯。
+// 記号入力ではベース指＋逆手小指の2本を同時点灯するため配列を受ける。
 export function highlightFinger(finger) {
   const svg = document.querySelector('.hands-svg');
   if (!svg) return;
-  // 'thumb' が来たら左右両方の親指を点灯
-  const targets = finger === 'thumb' ? ['thumb-l', 'thumb-r'] : [finger];
+  const list = finger == null ? [] : Array.isArray(finger) ? finger : [finger];
+  const targets = [];
+  for (const f of list) {
+    // 'thumb' が来たら左右両方の親指を点灯
+    if (f === 'thumb') targets.push('thumb-l', 'thumb-r');
+    else if (f) targets.push(f);
+  }
   svg.querySelectorAll('.finger').forEach((el) => {
     el.classList.toggle('is-active', targets.includes(el.dataset.finger));
   });
