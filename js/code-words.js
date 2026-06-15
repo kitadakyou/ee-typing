@@ -207,17 +207,7 @@ public static int Fibonacci(int n)
     code: `
 public static int Clamp(int value, int min, int max)
 {
-    if (value < min)
-    {
-        return min;
-    }
-
-    if (value > max)
-    {
-        return max;
-    }
-
-    return value;
+    return value < min ? min : value > max ? max : value;
 }
 `.trim(),
   },
@@ -338,6 +328,301 @@ public static List<int> Distinct(int[] values)
     }
 
     return result;
+}
+`.trim(),
+  },
+  {
+    title: '最小値',
+    code: `
+public static int Min(int[] values)
+{
+    int min = values[0];
+    for (int i = 1; i < values.Length; i++)
+    {
+        if (values[i] < min)
+        {
+            min = values[i];
+        }
+    }
+
+    return min;
+}
+`.trim(),
+  },
+  {
+    title: '絶対値',
+    code: `
+public static int Abs(int n)
+{
+    return n < 0 ? -n : n;
+}
+`.trim(),
+  },
+  {
+    title: '偶数判定',
+    code: `
+public static bool IsEven(int n)
+{
+    return n % 2 == 0;
+}
+`.trim(),
+  },
+  {
+    title: '符号',
+    code: `
+public static int Sign(int n)
+{
+    return n > 0 ? 1 : n < 0 ? -1 : 0;
+}
+`.trim(),
+  },
+  {
+    title: '線形探索',
+    code: `
+public static int IndexOf(int[] values, int target)
+{
+    for (int i = 0; i < values.Length; i++)
+    {
+        if (values[i] == target)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+`.trim(),
+  },
+  {
+    title: '配列の積',
+    code: `
+public static long Product(int[] values)
+{
+    long result = 1;
+    foreach (int value in values)
+    {
+        result *= value;
+    }
+
+    return result;
+}
+`.trim(),
+  },
+  {
+    title: '桁数を数える',
+    code: `
+public static int CountDigits(int n)
+{
+    if (n < 0)
+    {
+        n = -n;
+    }
+
+    int count = 1;
+    while (n >= 10)
+    {
+        count++;
+        n /= 10;
+    }
+
+    return count;
+}
+`.trim(),
+  },
+  {
+    title: '各桁の和',
+    code: `
+public static int DigitSum(int n)
+{
+    if (n < 0)
+    {
+        n = -n;
+    }
+
+    int sum = 0;
+    while (n > 0)
+    {
+        sum += n % 10;
+        n /= 10;
+    }
+
+    return sum;
+}
+`.trim(),
+  },
+  {
+    title: '最小公倍数',
+    code: `
+public static int Lcm(int a, int b)
+{
+    int x = a;
+    int y = b;
+    while (y != 0)
+    {
+        int tmp = y;
+        y = x % y;
+        x = tmp;
+    }
+
+    return a / x * b;
+}
+`.trim(),
+  },
+  {
+    title: '二乗の和',
+    code: `
+public static int SumOfSquares(int[] values)
+{
+    int total = 0;
+    foreach (int value in values)
+    {
+        total += value * value;
+    }
+
+    return total;
+}
+`.trim(),
+  },
+  {
+    title: '母音を数える',
+    code: `
+public static int CountVowels(string text)
+{
+    int count = 0;
+    foreach (char c in text)
+    {
+        if ("aeiou".Contains(c))
+        {
+            count++;
+        }
+    }
+
+    return count;
+}
+`.trim(),
+  },
+  {
+    title: '文字列の繰り返し',
+    code: `
+public static string Repeat(string text, int times)
+{
+    string result = "";
+    for (int i = 0; i < times; i++)
+    {
+        result += text;
+    }
+
+    return result;
+}
+`.trim(),
+  },
+  {
+    title: '三角数',
+    code: `
+public static int Triangular(int n)
+{
+    int total = 0;
+    for (int i = 1; i <= n; i++)
+    {
+        total += i;
+    }
+
+    return total;
+}
+`.trim(),
+  },
+  {
+    title: '配列の逆順',
+    code: `
+public static int[] ReverseArray(int[] values)
+{
+    int[] result = new int[values.Length];
+    for (int i = 0; i < values.Length; i++)
+    {
+        result[i] = values[values.Length - 1 - i];
+    }
+
+    return result;
+}
+`.trim(),
+  },
+  {
+    title: '偶数を抽出',
+    code: `
+public static List<int> FilterEven(int[] values)
+{
+    var result = new List<int>();
+    foreach (int value in values)
+    {
+        if (value % 2 == 0)
+        {
+            result.Add(value);
+        }
+    }
+
+    return result;
+}
+`.trim(),
+  },
+  {
+    title: '文字の出現回数',
+    code: `
+public static int CountChar(string text, char target)
+{
+    int count = 0;
+    foreach (char c in text)
+    {
+        if (c == target)
+        {
+            count++;
+        }
+    }
+
+    return count;
+}
+`.trim(),
+  },
+  {
+    title: '累積和',
+    code: `
+public static List<int> RunningTotal(int[] values)
+{
+    var result = new List<int>();
+    int sum = 0;
+    foreach (int value in values)
+    {
+        sum += value;
+        result.Add(sum);
+    }
+
+    return result;
+}
+`.trim(),
+  },
+  {
+    title: '範囲内判定',
+    code: `
+public static bool IsInRange(int value, int min, int max)
+{
+    return value >= min && value <= max;
+}
+`.trim(),
+  },
+  {
+    title: '2値の最大',
+    code: `
+public static int MaxOf(int a, int b)
+{
+    return a > b ? a : b;
+}
+`.trim(),
+  },
+  {
+    title: '2値の最小',
+    code: `
+public static int MinOf(int a, int b)
+{
+    return a < b ? a : b;
 }
 `.trim(),
   },
@@ -497,13 +782,7 @@ function fibonacci (n) {
     title: 'クランプ',
     code: `
 function clamp (value, min, max) {
-  if (value < min) {
-    return min
-  }
-  if (value > max) {
-    return max
-  }
-  return value
+  return value < min ? min : value > max ? max : value
 }
 `.trim(),
   },
@@ -597,6 +876,244 @@ function range (start, end) {
     result.push(i)
   }
   return result
+}
+`.trim(),
+  },
+  {
+    title: '最小値',
+    code: `
+function min (values) {
+  let result = values[0]
+  for (let i = 1; i < values.length; i++) {
+    if (values[i] < result) {
+      result = values[i]
+    }
+  }
+  return result
+}
+`.trim(),
+  },
+  {
+    title: '絶対値',
+    code: `
+function abs (n) {
+  return n < 0 ? -n : n
+}
+`.trim(),
+  },
+  {
+    title: '偶数判定',
+    code: `
+function isEven (n) {
+  return n % 2 === 0
+}
+`.trim(),
+  },
+  {
+    title: '符号',
+    code: `
+function sign (n) {
+  return n > 0 ? 1 : n < 0 ? -1 : 0
+}
+`.trim(),
+  },
+  {
+    title: '線形探索',
+    code: `
+function indexOf (values, target) {
+  for (let i = 0; i < values.length; i++) {
+    if (values[i] === target) {
+      return i
+    }
+  }
+  return -1
+}
+`.trim(),
+  },
+  {
+    title: '配列の積',
+    code: `
+function product (values) {
+  let result = 1
+  for (const value of values) {
+    result *= value
+  }
+  return result
+}
+`.trim(),
+  },
+  {
+    title: '桁数を数える',
+    code: `
+function countDigits (n) {
+  if (n < 0) {
+    n = -n
+  }
+  let count = 1
+  while (n >= 10) {
+    count++
+    n = Math.floor(n / 10)
+  }
+  return count
+}
+`.trim(),
+  },
+  {
+    title: '各桁の和',
+    code: `
+function digitSum (n) {
+  if (n < 0) {
+    n = -n
+  }
+  let sum = 0
+  while (n > 0) {
+    sum += n % 10
+    n = Math.floor(n / 10)
+  }
+  return sum
+}
+`.trim(),
+  },
+  {
+    title: '最小公倍数',
+    code: `
+function lcm (a, b) {
+  let x = a
+  let y = b
+  while (y !== 0) {
+    const tmp = y
+    y = x % y
+    x = tmp
+  }
+  return a / x * b
+}
+`.trim(),
+  },
+  {
+    title: '二乗の和',
+    code: `
+function sumOfSquares (values) {
+  let total = 0
+  for (const value of values) {
+    total += value * value
+  }
+  return total
+}
+`.trim(),
+  },
+  {
+    title: '母音を数える',
+    code: `
+function countVowels (text) {
+  let count = 0
+  for (const ch of text) {
+    if ('aeiou'.includes(ch)) {
+      count++
+    }
+  }
+  return count
+}
+`.trim(),
+  },
+  {
+    title: '文字列の繰り返し',
+    code: `
+function repeat (text, times) {
+  let result = ''
+  for (let i = 0; i < times; i++) {
+    result += text
+  }
+  return result
+}
+`.trim(),
+  },
+  {
+    title: '三角数',
+    code: `
+function triangular (n) {
+  let total = 0
+  for (let i = 1; i <= n; i++) {
+    total += i
+  }
+  return total
+}
+`.trim(),
+  },
+  {
+    title: '配列の逆順',
+    code: `
+function reverseArray (values) {
+  const result = []
+  for (let i = values.length - 1; i >= 0; i--) {
+    result.push(values[i])
+  }
+  return result
+}
+`.trim(),
+  },
+  {
+    title: '偶数を抽出',
+    code: `
+function filterEven (values) {
+  const result = []
+  for (const value of values) {
+    if (value % 2 === 0) {
+      result.push(value)
+    }
+  }
+  return result
+}
+`.trim(),
+  },
+  {
+    title: '文字の出現回数',
+    code: `
+function countChar (text, target) {
+  let count = 0
+  for (const ch of text) {
+    if (ch === target) {
+      count++
+    }
+  }
+  return count
+}
+`.trim(),
+  },
+  {
+    title: '累積和',
+    code: `
+function runningTotal (values) {
+  const result = []
+  let sum = 0
+  for (const value of values) {
+    sum += value
+    result.push(sum)
+  }
+  return result
+}
+`.trim(),
+  },
+  {
+    title: '範囲内判定',
+    code: `
+function isInRange (value, min, max) {
+  return value >= min && value <= max
+}
+`.trim(),
+  },
+  {
+    title: '2値の最大',
+    code: `
+function maxOf (a, b) {
+  return a > b ? a : b
+}
+`.trim(),
+  },
+  {
+    title: '2値の最小',
+    code: `
+function minOf (a, b) {
+  return a < b ? a : b
 }
 `.trim(),
   },
