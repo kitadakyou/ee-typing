@@ -21,10 +21,12 @@ const screens = {
   result: document.getElementById('screen-result'),
 };
 const kbEl = document.getElementById('keyboard');
+const jpSectionEl = document.getElementById('jp-section');
 const boardEl = document.getElementById('board');
 const codeSectionEl = document.getElementById('code-section');
 const el = {
   flash: document.getElementById('flash'),
+  source: document.getElementById('source'),
   display: document.getElementById('display'),
   reading: document.getElementById('reading'),
   romajiTyped: document.getElementById('romaji-typed'),
@@ -48,8 +50,9 @@ const romajiEngine = createEngine();
 const codeEngine = createCodeEngine();
 let engine = romajiEngine;
 let stats = null;
-let queue = []; // 今セットのお題（romaji:{display,reading} / code:{title,code}）
-let index = 0; // 何問目か（0始まり）
+let queue = []; // 今セットのお題（romaji:{source,sentences[]} / code:{title,code}）
+let index = 0; // 何問目か＝何作品目か（0始まり）
+let sentenceIndex = 0; // 日本語モード: 作品内で何文目か（0始まり）
 let phase = 'start'; // 'start' | 'play' | 'result'
 let mode = 'romaji'; // 'romaji' | 'code'
 let lang = null; // 'csharp' | 'typescript'（code 時）
@@ -74,14 +77,14 @@ function startSet(m, l) {
     queue = packFunctions(CODE_POOLS[lang]);
     renderKeyboard(kbEl, US_KEY_ROWS);
     kbEl.classList.add('is-us');
-    boardEl.hidden = true;
+    jpSectionEl.hidden = true;
     codeSectionEl.hidden = false;
   } else {
     engine = romajiEngine;
     queue = packPassages(PASSAGES);
     renderKeyboard(kbEl, US_KEY_ROWS, { singleLabel: true }); // US 配列・1段ラベル
     kbEl.classList.add('is-us');
-    boardEl.hidden = false;
+    jpSectionEl.hidden = false;
     codeSectionEl.hidden = true;
   }
 
@@ -92,19 +95,50 @@ function startSet(m, l) {
 }
 
 function loadWord() {
-  const w = queue[index];
+  el.progress.textContent = `${index + 1} / ${queue.length}`;
   if (mode === 'code') {
+    const w = queue[index];
     engine.setText(w.code);
     el.codeTitle.textContent = `${LANG_LABELS[lang]} — ${w.title}`;
-  } else {
-    engine.setText(w.reading);
-    el.display.textContent = w.display;
-    el.reading.textContent = w.reading;
+    updateView();
+    updateGuide();
+    updateLiveAcc();
+    return;
   }
-  el.progress.textContent = `${index + 1} / ${queue.length}`;
+  // 日本語: 作品をロードして文単位で進行する
+  el.source.textContent = queue[index].source;
+  sentenceIndex = 0;
+  loadSentence();
+  boardEl.scrollTop = 0; // 作品先頭（冒頭の文）から表示
+}
+
+// 本文全文を文ごとの span で描画。現在文だけ黒（.s-cur）、他は淡色（.s-dim）。
+function renderDisplay() {
+  const ss = queue[index].sentences;
+  el.display.innerHTML = ss
+    .map((s, i) => {
+      const cls = i === sentenceIndex ? 's-cur' : 's-dim';
+      const id = i === sentenceIndex ? ' id="s-cur"' : '';
+      return `<span class="${cls}"${id}>${escapeHtml(s.display)}</span>`;
+    })
+    .join('');
+}
+
+// 現在文をエンジンにセットし、本文ハイライト・読み・ローマ字・ガイドを更新する。
+function loadSentence() {
+  const s = queue[index].sentences[sentenceIndex];
+  engine.setText(s.reading);
+  el.reading.textContent = s.reading;
+  renderDisplay();
   updateView();
   updateGuide();
   updateLiveAcc();
+  const cur = document.getElementById('s-cur');
+  if (cur) cur.scrollIntoView({ block: 'nearest' }); // 現在文を本文枠内に表示
+}
+
+function escapeHtml(str) {
+  return str.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 }
 
 // 打鍵済み/残りの色分け表示（モードで出力先を切り替え）
@@ -118,6 +152,8 @@ function updateView() {
   } else {
     el.romajiTyped.textContent = engine.typedRomaji();
     el.romajiRest.textContent = engine.remainingRomaji();
+    // 長文時、打鍵位置（未打ローマ字の先頭）がパネル内に見えるよう追従
+    el.romajiRest.scrollIntoView({ block: 'nearest' });
   }
 }
 
@@ -165,6 +201,16 @@ function doFlash() {
   el.flash.classList.remove('flash');
   void el.flash.offsetWidth; // リフローでアニメ再始動
   el.flash.classList.add('flash');
+}
+
+// 日本語: 作品内の次の文へ。最後の文を終えたら次の作品へ。
+function nextSentence() {
+  sentenceIndex++;
+  if (sentenceIndex >= queue[index].sentences.length) {
+    nextWord();
+  } else {
+    loadSentence();
+  }
 }
 
 function nextWord() {
@@ -245,7 +291,8 @@ document.addEventListener('keydown', (e) => {
     updateView();
     updateLiveAcc();
     if (res.finished) {
-      nextWord();
+      if (mode === 'code') nextWord();
+      else nextSentence();
     } else {
       updateGuide();
     }

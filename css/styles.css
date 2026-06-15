@@ -33,27 +33,45 @@ html, body {
   border-radius: 10px;
   padding: 22px 26px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  max-height: 260px; /* 本文は約6行まで。超過分はパネル内スクロール（現在文へ自動追従） */
+  overflow-y: auto;
+}
+.source {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--orange);
 }
 .display {
   margin: 0;
-  font-size: 26px;
+  font-size: 20px;
   font-weight: 600;
-  color: var(--ink);
   letter-spacing: 0.02em;
+  line-height: 1.8;
+}
+.display .s-cur { color: var(--ink); }   /* 今タイプしている文（黒） */
+.display .s-dim { color: #cfcfcf; }      /* それ以外の文（淡いグレー） */
+/* 入力中の文（本文枠の下）。長い1文でもキーボードが収まるよう高さ上限＋スクロール */
+.typing-line {
+  margin-top: 14px;
+  max-height: 30vh;
+  overflow-y: auto;
 }
 .reading {
-  margin: 4px 0 0;
+  margin: 0;
   font-size: 14px;
   color: var(--ink-soft);
+  line-height: 1.7;
+  word-break: break-all; /* かなも文字単位で折り返す */
 }
 .romaji {
-  margin: 14px 0 0;
-  font-size: 24px;
+  margin: 6px 0 0;
+  font-size: 20px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   font-family: "Arial", "Helvetica Neue", sans-serif;
-  border-top: 1px solid var(--line);
-  padding-top: 12px;
+  line-height: 1.6;
+  word-break: break-all; /* 英単語ではないので、入りきらなくなった文字で折り返す */
 }
 .romaji .typed { color: var(--orange); }
 .romaji .rest  { color: var(--ink); }

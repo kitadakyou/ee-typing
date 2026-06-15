@@ -35,14 +35,19 @@
         <span id="live-acc" class="live-acc">正確率 100%</span>
       </div>
 
-      <!-- お題パネル（日本語ローマ字） -->
-      <section id="board" class="board" aria-label="お題">
-        <p id="display" class="display"></p>
-        <p id="reading" class="reading"></p>
-        <p id="romaji" class="romaji">
-          <span class="typed" id="romaji-typed"></span><span class="rest" id="romaji-rest"></span>
-        </p>
-      </section>
+      <!-- お題パネル（日本語ローマ字）。出典→本文枠→入力中の文 の3段で分離 -->
+      <div id="jp-section">
+        <p id="source" class="source"></p>
+        <section id="board" class="board" aria-label="本文">
+          <p id="display" class="display"></p>
+        </section>
+        <div class="typing-line" aria-label="入力中の文">
+          <p id="reading" class="reading"></p>
+          <p id="romaji" class="romaji">
+            <span class="typed" id="romaji-typed"></span><span class="rest" id="romaji-rest"></span>
+          </p>
+        </div>
+      </div>
 
       <!-- コードパネル（プログラミングモード） -->
       <section id="code-section" class="code-wrap" aria-label="コード" hidden>
