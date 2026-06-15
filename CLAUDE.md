@@ -6,37 +6,42 @@ e-typing（https://www.e-typing.ne.jp/）の「タイピング練習ゲーム部
 
 - **技術**: 素の HTML/CSS/JS（ビルドツールなし、ES Modules）。依存ライブラリなし。
 - **方針**: KISS / YAGNI。指示されたことだけ実装し、余計な機能追加・リファクタはしない。
+- **リポジトリ**: github.com/kitadakyou/ee-typing（private, デフォルト main）。
 
 ## 構成
 ```
-index.html        … 画面（お題/読み/ローマ字/キーボード/両手/明転オーバーレイ）
-css/styles.css    … 白基調・オレンジ(#f0a020)アクセント
+index.html        … スタート/プレイ/結果の3画面（お題/読み/ローマ字/キーボード/両手/明転）
+css/styles.css    … 白基調・オレンジ(#f0a020)アクセント、3画面のスタイル
 js/
   layout.js       … KEY_ROWS（キー配列）＋ KEY_TO_FINGER（キー→指）＋ FINGER_NAMES
   keyboard.js     … renderKeyboard() / highlightKeys()
   hands.js        … renderHands() / highlightFinger()  （'thumb'で左右親指）
-  sample.js       … Stage1の見た目サンプル（Stage2で main.js に置換予定）
-  romaji.js       … 【Stage2】かな→ローマ字オートマトン＋打鍵マッチャ
-  words.js        … 【Stage2】お題データ {display, reading}
-  stats.js        … 【Stage2】集計・スコア・苦手キー/指
-  main.js         … 【Stage2】ゲーム制御（3画面）
+  romaji.js       … かな→ローマ字オートマトン＋打鍵マッチャ（並列仮説方式）＋セルフテスト
+  words.js        … お題データ {display, reading}（外来音を含む）＋ shuffled()
+  stats.js        … 集計・スコア・ランク・苦手キー/指
+  main.js         … ゲーム制御（3画面、keydown 連動）
 ```
 指コード: `lp lr lm li`（左 小/薬/中/人）, `ri rm rr rp`（右 人/中/薬/小）, `thumb`（親指）。
 
 ## 開発状況
-- **Stage 1（見た目サンプル）= 完了・承認済み。**
-- **Stage 2（機能）= これから。** 詳細は `HANDOFF.md` と承認済み計画
-  `~/.claude/plans/https-www-e-typing-ne-jp-1-starry-giraffe.md` を参照。
+- **Stage 1（見た目サンプル）/ Stage 2（機能）ともに完了・動作確認済み。**
+- セルフテスト33件PASS、ブラウザ（chrome-devtools MCP）で検証済み。
 
-## 進め方の作法（重要）
-- **段階リリース**: まず見た目サンプルを作って確認を取り、OK後に機能を実装する。
-  いきなり全機能を書かない。
-
-## 実装上の必須ルール（Stage 2）
-- ローマ字判定は**並列仮説方式**で実装する（貪欲コミット禁止）。
+## ローマ字判定の確定仕様（重要）
+- **両対応**: 正しいローマ字ならどの打ち方でも正解にする（し=`si`/`shi`/`ci`、つ=`tu`/`tsu`、
+  ん=`n`/`nn`、っ=子音重ね/`xtu` 等）。**並列仮説方式**（貪欲コミット禁止）で実装。
   貪欲だと `かんけい` を `kannkei`(ん=nn) で打つと失敗する。
-- ローマ字エンジンは**UI配線前にセルフテストを通す**（し=shi/si、かんけい=kankei/kannkei 両方 等）。
-- お題の `reading` は romaji.js の対応表内のかなだけ使う（未対応かなでエンジンが停止する）。
+- **見本表示（グレーの残りローマ字）は訓令式・ん=nn・っ=子音重ねを canonical** にする
+  （`si/ti/tu/zi/hu`、`kka`、`syougunn`、でぃ=`dhi`）。各かなの候補配列の先頭が canonical。
+- **外来音対応**: ディ=`dhi`、ファ=`fa`、ティ=`thi`、ヴ=`vu` 等（`romaji.js` の TABLE 参照）。
+  `dexi`/`deli` のような分割打鍵も自動で通る。
+- **単独 n** は「次が母音/`y` 以外」のとき許可（な行=n始まりは許可 → `みんな`=minna 可、
+  `かんな`=kanna 可）。語末・母音前・や行前は nn 必須（`ほん`=honn）。
+
+## 実装上の必須ルール
+- ローマ字エンジンを触ったら **`romaji.js` 末尾のセルフテストを必ず通す**
+  （ブラウザは import 時に自動実行。CLIなら `cp js/romaji.js /tmp/x.mjs && node /tmp/x.mjs`）。
+- お題の `reading` は `romaji.js` の TABLE 網羅内のかなだけ使う（未対応かなでエンジンが停止する）。
 - 入力は**直接入力(IME OFF)前提**。`event.key` は小文字化して扱う。`key==="Process"`/IME合成中は無視。
 - ミス演出は**画面全体の明転（白フラッシュ）**。`#flash` に `.flash` を付け直す。
 
