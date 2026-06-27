@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ee-typing — TypeScript</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-mode="code" data-lang="typescript">
+  <!-- ミス時の明転（白フラッシュ）用オーバーレイ -->
+  <div id="flash" class="flash-overlay" aria-hidden="true"></div>
+
+  <main class="stage">
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen is-active">
+      <div class="play-bar">
+        <span id="progress" class="progress">1 / 5</span>
+        <span id="live-acc" class="live-acc">正確率 100%</span>
+      </div>
+
+      <!-- お題パネル（日本語ローマ字）。出典→本文枠→入力中の文 の3段で分離 -->
+      <div id="jp-section" hidden>
+        <p id="source" class="source"></p>
+        <section id="board" class="board" aria-label="本文">
+          <p id="display" class="display"></p>
+        </section>
+        <div class="typing-line" aria-label="入力中の文">
+          <p id="reading" class="reading"></p>
+          <p id="romaji" class="romaji">
+            <span class="typed" id="romaji-typed"></span><span class="rest" id="romaji-rest"></span>
+          </p>
+        </div>
+      </div>
+
+      <!-- コードパネル（プログラミングモード） -->
+      <section id="code-section" class="code-wrap" aria-label="コード">
+        <p id="code-title" class="code-title"></p>
+        <pre class="code-view"><code class="typed" id="code-typed"></code><code class="cursor" id="code-cursor"></code><code class="rest" id="code-rest"></code></pre>
+      </section>
+
+      <!-- キーボード -->
+      <section class="keyboard-wrap" aria-label="キーボード">
+        <div id="keyboard" class="keyboard"></div>
+      </section>
+
+      <!-- 両手 -->
+      <section class="hands-wrap" aria-label="両手">
+        <div id="hands"></div>
+      </section>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen">
+      <h2 class="result-title">結果</h2>
+      <p id="result-lang" class="result-lang"></p>
+      <div class="result-rank">
+        <span class="rank-label">ランク</span>
+        <span id="result-rank" class="rank-value">A</span>
+      </div>
+      <div class="result-grid">
+        <div class="stat"><span class="stat-num" id="result-score">0</span><span class="stat-cap">スコア</span></div>
+        <div class="stat"><span class="stat-num" id="result-wpm">0</span><span class="stat-cap">WPM</span></div>
+        <div class="stat"><span class="stat-num" id="result-kpm">0</span><span class="stat-cap">KPM</span></div>
+        <div class="stat"><span class="stat-num" id="result-acc">0%</span><span class="stat-cap">正確率</span></div>
+        <div class="stat"><span class="stat-num" id="result-correct">0</span><span class="stat-cap">正打数</span></div>
+        <div class="stat"><span class="stat-num" id="result-miss">0</span><span class="stat-cap">ミス数</span></div>
+      </div>
+      <div class="weak-wrap">
+        <div class="weak-col">
+          <h3 class="weak-head">苦手なキー</h3>
+          <ul id="weak-keys" class="weak-list"></ul>
+        </div>
+        <div class="weak-col">
+          <h3 class="weak-head">苦手な指</h3>
+          <ul id="weak-fingers" class="weak-list"></ul>
+        </div>
+      </div>
+      <button id="btn-retry" class="btn-primary" type="button">もう一度（または Space / Enter）</button>
+    </section>
+  </main>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

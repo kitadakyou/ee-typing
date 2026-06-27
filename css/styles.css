@@ -259,6 +259,7 @@ html, body {
   margin: 0 auto 24px;
 }
 .btn-mode {
+  display: inline-block;
   font-size: 16px;
   font-weight: 600;
   padding: 12px 22px;
@@ -266,6 +267,7 @@ html, body {
   border: 1px solid #d8870f;
   background: linear-gradient(var(--orange), #e1901a);
   color: #fff;
+  text-decoration: none;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(240, 160, 32, 0.3);
 }

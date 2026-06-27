@@ -15,8 +15,9 @@ import {
 } from './layout.js';
 
 // ---- DOM 参照 ----
+// モード別ページ（/japanese, /program/c-sharp, /program/typescript）では
+// start 画面は存在しない。play と result のみ参照する。
 const screens = {
-  start: document.getElementById('screen-start'),
   play: document.getElementById('screen-play'),
   result: document.getElementById('screen-result'),
 };
@@ -305,9 +306,12 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// スタート画面のモードボタン
-document.querySelectorAll('.btn-mode').forEach((btn) => {
-  btn.addEventListener('click', () => startSet(btn.dataset.mode, btn.dataset.lang));
-});
 // 結果画面のもう一度ボタン
 el.btnRetry.addEventListener('click', () => startSet(lastMode, lastLang));
+
+// ---- 自動開始 ----
+// body の data-mode / data-lang で開始モードを決める（URL ルーティング駆動）。
+const bodyMode = document.body.dataset.mode;
+if (bodyMode === 'romaji' || bodyMode === 'code') {
+  startSet(bodyMode, document.body.dataset.lang || null);
+}
