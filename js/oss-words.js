@@ -1363,4 +1363,518 @@ public static function chopStart($subject, $needle)
 }
 `.trim(),
   },
+  {
+    lang: 'Go',
+    title: 'filterFlags',
+    repo: 'gin-gonic/gin',
+    license: 'MIT',
+    url: 'https://github.com/gin-gonic/gin/blob/0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646/utils.go#L92-L99',
+    code: `
+func filterFlags(content string) string {
+	for i, char := range content {
+		if char == ' ' || char == ';' {
+			return content[:i]
+		}
+	}
+	return content
+}
+`.trim(),
+  },
+  {
+    lang: 'Go',
+    title: 'joinPaths',
+    repo: 'gin-gonic/gin',
+    license: 'MIT',
+    url: 'https://github.com/gin-gonic/gin/blob/0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646/utils.go#L136-L146',
+    code: `
+func joinPaths(absolutePath, relativePath string) string {
+	if relativePath == "" {
+		return absolutePath
+	}
+
+	finalPath := path.Join(absolutePath, relativePath)
+	if lastChar(relativePath) == '/' && lastChar(finalPath) != '/' {
+		return finalPath + "/"
+	}
+	return finalPath
+}
+`.trim(),
+  },
+  {
+    lang: 'Go',
+    title: 'rpad',
+    repo: 'spf13/cobra',
+    license: 'Apache-2.0',
+    url: 'https://github.com/spf13/cobra/blob/adbc8813901bba65827259daa8e22ff94ec1f30e/cobra.go#L174-L177',
+    code: `
+func rpad(s string, padding int) string {
+	formattedString := fmt.Sprintf("%%-%ds", padding)
+	return fmt.Sprintf(formattedString, s)
+}
+`.trim(),
+  },
+  {
+    lang: 'Go',
+    title: 'stringInSlice',
+    repo: 'spf13/cobra',
+    license: 'Apache-2.0',
+    url: 'https://github.com/spf13/cobra/blob/adbc8813901bba65827259daa8e22ff94ec1f30e/cobra.go#L225-L232',
+    code: `
+func stringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
+}
+`.trim(),
+  },
+  {
+    lang: 'Go',
+    title: 'utils.ModuloWithWrap',
+    repo: 'jesseduffield/lazygit',
+    license: 'MIT',
+    url: 'https://github.com/jesseduffield/lazygit/blob/4b38f6f8b76993bac2e8dbd9ab29ae37090c4851/pkg/utils/utils.go#L40-L51',
+    code: `
+func ModuloWithWrap(n, max int) int {
+	if max == 0 {
+		return 0
+	}
+
+	if n >= max {
+		return n % max
+	} else if n < 0 {
+		return max + n
+	}
+	return n
+}
+`.trim(),
+  },
+  {
+    lang: 'Go',
+    title: 'utils.ExpandTilde',
+    repo: 'jesseduffield/lazygit',
+    license: 'MIT',
+    url: 'https://github.com/jesseduffield/lazygit/blob/4b38f6f8b76993bac2e8dbd9ab29ae37090c4851/pkg/utils/utils.go#L119-L134',
+    code: `
+func ExpandTilde(path string) string {
+	if path != "~" && !strings.HasPrefix(path, "~/") &&
+		!(runtime.GOOS == "windows" && strings.HasPrefix(path, \`~\\\`)) {
+		return path
+	}
+
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return path
+	}
+
+	if path == "~" {
+		return home
+	}
+	return filepath.Join(home, path[2:])
+}
+`.trim(),
+  },
+  {
+    lang: 'JavaScript',
+    title: 'stringReplaceAll',
+    repo: 'chalk/chalk',
+    license: 'MIT',
+    url: 'https://github.com/chalk/chalk/blob/47fc05abd46171b235e24174cd2dba83d25bf037/source/utilities.js#L2-L19',
+    code: `
+export function stringReplaceAll(string, substring, postfix) {
+	let index = string.indexOf(substring);
+	if (index === -1) {
+		return string;
+	}
+
+	const substringLength = substring.length;
+	let endIndex = 0;
+	let returnValue = '';
+	do {
+		returnValue += string.slice(endIndex, index) + substring + postfix;
+		endIndex = index + substringLength;
+		index = string.indexOf(substring, endIndex);
+	} while (index !== -1);
+
+	returnValue += string.slice(endIndex);
+	return returnValue;
+}
+`.trim(),
+  },
+  {
+    lang: 'JavaScript',
+    title: 'zeroFill',
+    repo: 'moment/moment',
+    license: 'MIT',
+    url: 'https://github.com/moment/moment/blob/c2a703a4d84aa57ee2722ff8fb4a8016279fb3c4/src/lib/utils/zero-fill.js#L1-L10',
+    code: `
+export default function zeroFill(number, targetLength, forceSign) {
+    var absNumber = '' + Math.abs(number),
+        zerosToFill = targetLength - absNumber.length,
+        sign = number >= 0;
+    return (
+        (sign ? (forceSign ? '+' : '') : '-') +
+        Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) +
+        absNumber
+    );
+}
+`.trim(),
+  },
+  {
+    lang: 'JavaScript',
+    title: 'absFloor',
+    repo: 'moment/moment',
+    license: 'MIT',
+    url: 'https://github.com/moment/moment/blob/c2a703a4d84aa57ee2722ff8fb4a8016279fb3c4/src/lib/utils/abs-floor.js#L1-L8',
+    code: `
+export default function absFloor(number) {
+    if (number < 0) {
+        return Math.ceil(number) || 0;
+    } else {
+        return Math.floor(number);
+    }
+}
+`.trim(),
+  },
+  {
+    lang: 'TypeScript',
+    title: 'remove',
+    repo: 'vuejs/core',
+    license: 'MIT',
+    url: 'https://github.com/vuejs/core/blob/bf5f0dd877dd3c23ce85c2cbc1dd771567e84c8c/packages/shared/src/general.ts#L26-L31',
+    code: `
+export const remove = <T>(arr: T[], el: T): void => {
+  const i = arr.indexOf(el)
+  if (i > -1) {
+    arr.splice(i, 1)
+  }
+}
+`.trim(),
+  },
+  {
+    lang: 'TypeScript',
+    title: 'toRawType',
+    repo: 'vuejs/core',
+    license: 'MIT',
+    url: 'https://github.com/vuejs/core/blob/bf5f0dd877dd3c23ce85c2cbc1dd771567e84c8c/packages/shared/src/general.ts#L69-L72',
+    code: `
+export const toRawType = (value: unknown): string => {
+  return toTypeString(value).slice(8, -1)
+}
+`.trim(),
+  },
+  {
+    lang: 'Python',
+    title: 'capfirst',
+    repo: 'django/django',
+    license: 'BSD-3-Clause',
+    url: 'https://github.com/django/django/blob/d430084791a61b31cecec132bce3dca19194f7f2/django/utils/text.py#L27-L33',
+    code: `
+def capfirst(x):
+    if not x:
+        return x
+    if not isinstance(x, str):
+        x = str(x)
+    return x[0].upper() + x[1:]
+`.trim(),
+  },
+  {
+    lang: 'Python',
+    title: 'get_text_list',
+    repo: 'django/django',
+    license: 'BSD-3-Clause',
+    url: 'https://github.com/django/django/blob/d430084791a61b31cecec132bce3dca19194f7f2/django/utils/text.py#L283-L305',
+    code: `
+def get_text_list(list_, last_word=gettext_lazy("or")):
+    if not list_:
+        return ""
+    if len(list_) == 1:
+        return str(list_[0])
+    return "%s %s %s" % (
+        _(", ").join(str(i) for i in list_[:-1]),
+        str(last_word),
+        str(list_[-1]),
+    )
+`.trim(),
+  },
+  {
+    lang: 'Python',
+    title: 'has_triple_quotes',
+    repo: 'psf/black',
+    license: 'MIT',
+    url: 'https://github.com/psf/black/blob/11cff1312bf96e02bce9a467d0b5a2dd65300642/src/black/strings.py#L45-L51',
+    code: `
+def has_triple_quotes(string: str) -> bool:
+    raw_string = string.lstrip(STRING_PREFIX_CHARS)
+    return raw_string[:3] in {'"""', "'''"}
+`.trim(),
+  },
+  {
+    lang: 'Python',
+    title: 'get_string_prefix',
+    repo: 'psf/black',
+    license: 'MIT',
+    url: 'https://github.com/psf/black/blob/11cff1312bf96e02bce9a467d0b5a2dd65300642/src/black/strings.py#L96-L112',
+    code: `
+def get_string_prefix(string: str) -> str:
+    assert_is_leaf_string(string)
+
+    prefix = []
+    for char in string:
+        if char in STRING_PREFIX_CHARS:
+            prefix.append(char)
+        else:
+            break
+    return "".join(prefix)
+`.trim(),
+  },
+  {
+    lang: 'Python',
+    title: 'split_cookies',
+    repo: 'httpie/cli',
+    license: 'BSD-3-Clause',
+    url: 'https://github.com/httpie/cli/blob/5b604c37c6c67e18e7c3e9aee6c88a8c22b98345/httpie/utils.py#L143-L153',
+    code: `
+def split_cookies(cookies):
+    if not cookies:
+        return []
+    return RE_COOKIE_SPLIT.split(cookies)
+`.trim(),
+  },
+  {
+    lang: 'Python',
+    title: 'get_path_param_names',
+    repo: 'fastapi/fastapi',
+    license: 'MIT',
+    url: 'https://github.com/fastapi/fastapi/blob/bb7f314287bf36e04539c572a2256d94ea45f0d6/fastapi/utils.py#L43-L44',
+    code: `
+def get_path_param_names(path: str) -> set[str]:
+    return set(re.findall("{(.*?)}", path))
+`.trim(),
+  },
+  {
+    lang: 'Python',
+    title: 'deep_dict_update',
+    repo: 'fastapi/fastapi',
+    license: 'MIT',
+    url: 'https://github.com/fastapi/fastapi/blob/bb7f314287bf36e04539c572a2256d94ea45f0d6/fastapi/utils.py#L103-L118',
+    code: `
+def deep_dict_update(main_dict: dict[Any, Any], update_dict: dict[Any, Any]) -> None:
+    for key, value in update_dict.items():
+        if (
+            key in main_dict
+            and isinstance(main_dict[key], dict)
+            and isinstance(value, dict)
+        ):
+            deep_dict_update(main_dict[key], value)
+        elif (
+            key in main_dict
+            and isinstance(main_dict[key], list)
+            and isinstance(update_dict[key], list)
+        ):
+            main_dict[key] = main_dict[key] + update_dict[key]
+        else:
+            main_dict[key] = value
+`.trim(),
+  },
+  {
+    lang: 'Ruby',
+    title: 'Utils.titleize_slug',
+    repo: 'jekyll/jekyll',
+    license: 'MIT',
+    url: 'https://github.com/jekyll/jekyll/blob/97c3bdc822df9d5bea4c269b29a28de5a5e29d70/lib/jekyll/utils.rb#L21-L23',
+    code: `
+def titleize_slug(slug)
+  slug.split("-").map!(&:capitalize).join(" ")
+end
+`.trim(),
+  },
+  {
+    lang: 'Ruby',
+    title: 'Utils.deep_merge_hashes',
+    repo: 'jekyll/jekyll',
+    license: 'MIT',
+    url: 'https://github.com/jekyll/jekyll/blob/97c3bdc822df9d5bea4c269b29a28de5a5e29d70/lib/jekyll/utils.rb#L28-L30',
+    code: `
+def deep_merge_hashes(master_hash, other_hash)
+  deep_merge_hashes!(master_hash.dup, other_hash)
+end
+`.trim(),
+  },
+  {
+    lang: 'C#',
+    title: 'StringUtils.IsWhiteSpace',
+    repo: 'JamesNK/Newtonsoft.Json',
+    license: 'MIT',
+    url: 'https://github.com/JamesNK/Newtonsoft.Json/blob/52fa3aef1f2cadcd3a3f874251eddc98d3efbbaa/Src/Newtonsoft.Json/Utilities/StringUtils.cs#L90-L111',
+    code: `
+public static bool IsWhiteSpace(string s)
+{
+    if (s == null)
+    {
+        throw new ArgumentNullException(nameof(s));
+    }
+
+    if (s.Length == 0)
+    {
+        return false;
+    }
+
+    for (int i = 0; i < s.Length; i++)
+    {
+        if (!char.IsWhiteSpace(s[i]))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+`.trim(),
+  },
+  {
+    lang: 'Rust',
+    title: 'is_existing_directory',
+    repo: 'sharkdp/fd',
+    license: 'MIT',
+    url: 'https://github.com/sharkdp/fd/blob/b6ca4e02167833c2c492de6ae9d06b56488d4696/src/filesystem.rs#L38-L42',
+    code: `
+pub fn is_existing_directory(path: &Path) -> bool {
+    path.is_dir() && (path.file_name().is_some() || path.normalize().is_ok())
+}
+`.trim(),
+  },
+  {
+    lang: 'Rust',
+    title: 'strip_current_dir',
+    repo: 'sharkdp/fd',
+    license: 'MIT',
+    url: 'https://github.com/sharkdp/fd/blob/b6ca4e02167833c2c492de6ae9d06b56488d4696/src/filesystem.rs#L119-L121',
+    code: `
+pub fn strip_current_dir(path: &Path) -> &Path {
+    path.strip_prefix(".").unwrap_or(path)
+}
+`.trim(),
+  },
+  {
+    lang: 'Rust',
+    title: 'Pack::pack',
+    repo: 'tokio-rs/tokio',
+    license: 'MIT',
+    url: 'https://github.com/tokio-rs/tokio/blob/cdd9dae3aa5056e23dc4d5bc4f852ab8fbf27aff/tokio/src/util/bit.rs#L35-L38',
+    code: `
+pub(crate) fn pack(&self, value: usize, base: usize) -> usize {
+    assert!(value <= self.max_value());
+    (base & !self.mask) | (value << self.shift)
+}
+`.trim(),
+  },
+  {
+    lang: 'Rust',
+    title: 'Pack::unpack',
+    repo: 'tokio-rs/tokio',
+    license: 'MIT',
+    url: 'https://github.com/tokio-rs/tokio/blob/cdd9dae3aa5056e23dc4d5bc4f852ab8fbf27aff/tokio/src/util/bit.rs#L40-L42',
+    code: `
+pub(crate) fn unpack(&self, src: usize) -> usize {
+    unpack(src, self.mask, self.shift)
+}
+`.trim(),
+  },
+  {
+    lang: 'Emacs Lisp',
+    title: 'doom-plist-keys',
+    repo: 'doomemacs/core',
+    license: 'MIT',
+    url: 'https://github.com/doomemacs/core/blob/59cdaa32ae933469bb6a1fb3cadee8a988c15968/lisp/lib/plist.el#L80-L86',
+    code: `
+(defun doom-plist-keys (plist)
+  (let (keys)
+    (while plist
+      (push (car plist) keys)
+      (setq plist (cddr plist)))
+    keys))
+`.trim(),
+  },
+  {
+    lang: 'Emacs Lisp',
+    title: 'doom-rpartial',
+    repo: 'doomemacs/core',
+    license: 'MIT',
+    url: 'https://github.com/doomemacs/core/blob/59cdaa32ae933469bb6a1fb3cadee8a988c15968/lisp/doom-lib.el#L332-L340',
+    code: `
+(defun doom-rpartial (fn &rest args)
+  (declare (side-effect-free t))
+  (lambda (&rest pre-args)
+    (apply fn (append pre-args args))))
+`.trim(),
+  },
+  {
+    lang: 'Emacs Lisp',
+    title: 'cmd!',
+    repo: 'doomemacs/core',
+    license: 'MIT',
+    url: 'https://github.com/doomemacs/core/blob/59cdaa32ae933469bb6a1fb3cadee8a988c15968/lisp/doom-lib.el#L830-L835',
+    code: `
+(defmacro cmd! (&rest body)
+  (declare (doc-string 1) (side-effect-free t))
+  \`(lambda (&rest _) (interactive) ,@body))
+`.trim(),
+  },
+  {
+    lang: 'Racket',
+    title: 'last',
+    repo: 'racket/racket',
+    license: 'MIT',
+    url: 'https://github.com/racket/racket/blob/50c3f99e333d40e2ad73d73a829275f12777f3e4/racket/collects/racket/list.rkt#L108-L114',
+    code: `
+(define (last l)
+  (if (and (pair? l) (list? l))
+    (let loop ([l l] [x (cdr l)])
+      (if (pair? x)
+        (loop x (cdr x))
+        (car l)))
+    (raise-argument-error 'last "(and/c list? (not/c empty?))" l)))
+`.trim(),
+  },
+  {
+    lang: 'Racket',
+    title: 'partition',
+    repo: 'racket/racket',
+    license: 'MIT',
+    url: 'https://github.com/racket/racket/blob/50c3f99e333d40e2ad73d73a829275f12777f3e4/racket/collects/racket/list.rkt#L566-L574',
+    code: `
+(define (partition pred l)
+  (unless (and (procedure? pred) (procedure-arity-includes? pred 1))
+    (raise-argument-error 'partition "(any/c . -> . any/c)" 0 pred l))
+  (unless (list? l) (raise-argument-error 'partition "list?" 1 pred l))
+  (let loop ([l l] [i '()] [o '()])
+    (if (null? l)
+      (values (reverse i) (reverse o))
+      (let ([x (car l)] [l (cdr l)])
+        (if (pred x) (loop l (cons x i) o) (loop l i (cons x o)))))))
+`.trim(),
+  },
+  {
+    lang: 'Racket',
+    title: 'remf',
+    repo: 'racket/racket',
+    license: 'MIT',
+    url: 'https://github.com/racket/racket/blob/50c3f99e333d40e2ad73d73a829275f12777f3e4/racket/collects/racket/list.rkt#L885-L895',
+    code: `
+(define (remf f ls)
+  (unless (list? ls)
+    (raise-argument-error 'remf "list?" 1 f ls))
+  (unless (and (procedure? f)
+               (procedure-arity-includes? f 1))
+    (raise-argument-error 'remf "(-> any/c any/c)" 0 f ls))
+  (cond [(null? ls) '()]
+        [(f (car ls)) (cdr ls)]
+        [else
+         (cons (car ls)
+               (remf f (cdr ls)))]))
+`.trim(),
+  },
 ];
