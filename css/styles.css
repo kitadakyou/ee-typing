@@ -335,6 +335,15 @@ html, body {
   line-height: 1.1;
   color: var(--orange);
 }
+.result-reason {
+  margin: -8px 0 18px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.result-reason p { margin: 0; }
+.result-reason p:first-child { color: var(--ink-soft); }
 .result-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -383,6 +392,17 @@ html, body {
   font-size: 14px;
 }
 .weak-name { font-weight: 600; }
+.weak-finger {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
 .weak-count { color: var(--orange); font-weight: 600; }
 .weak-none { color: var(--ink-soft); justify-content: flex-start; }
 

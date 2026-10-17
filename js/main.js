@@ -6,7 +6,7 @@ import { createEngine } from './romaji.js';
 import { createCodeEngine } from './code-engine.js';
 import { PASSAGES, packPassages } from './words.js';
 import { CODE_POOLS, LANG_LABELS, packFunctions } from './code-words.js';
-import { createStats } from './stats.js';
+import { createStats, rankReason } from './stats.js';
 import {
   US_KEY_ROWS,
   US_CHAR_TO_KEY,
@@ -237,6 +237,13 @@ function showResult(s) {
   const langText = s.mode === 'code' ? LANG_LABELS[s.lang] : '日本語（長文）';
   el.resultLang.textContent = `モード: ${langText}`;
   document.getElementById('result-rank').textContent = s.rank;
+  const reason = document.getElementById('result-reason');
+  reason.innerHTML = '';
+  for (const line of rankReason(s)) {
+    const p = document.createElement('p');
+    p.textContent = line;
+    reason.appendChild(p);
+  }
   document.getElementById('result-score').textContent = s.score;
   document.getElementById('result-wpm').textContent = s.wpm;
   document.getElementById('result-kpm').textContent = s.kpm;
@@ -259,7 +266,8 @@ function renderWeakList(ul, items, unit) {
   }
   for (const it of items) {
     const li = document.createElement('li');
-    li.innerHTML = `<span class="weak-name">${it.label}</span><span class="weak-count">${it.count}${unit}</span>`;
+    const finger = it.finger ? `<span class="weak-finger">${it.finger}</span>` : '';
+    li.innerHTML = `<span class="weak-name">${it.label}${finger}</span><span class="weak-count">${it.count}${unit}</span>`;
     ul.appendChild(li);
   }
 }
