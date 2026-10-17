@@ -125,7 +125,7 @@ function renderDisplay() {
     .map((s, i) => {
       const cls = i === sentenceIndex ? 's-cur' : 's-dim';
       const id = i === sentenceIndex ? ' id="s-cur"' : '';
-      return `<span class="${cls}"${id}>${escapeHtml(s.display)}</span>`;
+      return `<span class="${cls}"${id}>${rubyHtml(s.ruby ?? s.display)}</span>`;
     })
     .join('');
 }
@@ -141,6 +141,11 @@ function loadSentence() {
   updateLiveAcc();
   const cur = document.getElementById('s-cur');
   if (cur) cur.scrollIntoView({ block: 'nearest' }); // 現在文を本文枠内に表示
+}
+
+// {親字|ルビ} を <ruby> にする（ruby は青空文庫の原文にあるルビだけを持つ）
+function rubyHtml(str) {
+  return escapeHtml(str).replace(/\{(.+?)\|(.+?)\}/g, '<ruby>$1<rt>$2</rt></ruby>');
 }
 
 function escapeHtml(str) {
