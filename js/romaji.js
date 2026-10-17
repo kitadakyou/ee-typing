@@ -19,7 +19,7 @@ const TABLE = {
   ざ: ['za'], じ: ['zi', 'ji'], ず: ['zu'], ぜ: ['ze'], ぞ: ['zo'],
   // た行/だ行
   た: ['ta'], ち: ['ti', 'chi'], つ: ['tu', 'tsu'], て: ['te'], と: ['to'],
-  だ: ['da'], ぢ: ['di'], づ: ['du', 'zu'], で: ['de'], ど: ['do'],
+  だ: ['da'], ぢ: ['di'], づ: ['zu', 'du'], で: ['de'], ど: ['do'],
   // な行
   な: ['na'], に: ['ni'], ぬ: ['nu'], ね: ['ne'], の: ['no'],
   // は行/ば行/ぱ行
@@ -35,8 +35,8 @@ const TABLE = {
   // わ行
   わ: ['wa'], を: ['wo'], ゔ: ['vu'],
   // 小書き単独
-  ぁ: ['xa', 'la'], ぃ: ['xi', 'li'], ぅ: ['xu', 'lu'], ぇ: ['xe', 'le'], ぉ: ['xo', 'lo'],
-  ゃ: ['xya', 'lya'], ゅ: ['xyu', 'lyu'], ょ: ['xyo', 'lyo'], ゎ: ['xwa', 'lwa'],
+  ぁ: ['la', 'xa'], ぃ: ['li', 'xi'], ぅ: ['lu', 'xu'], ぇ: ['le', 'xe'], ぉ: ['lo', 'xo'],
+  ゃ: ['lya', 'xya'], ゅ: ['lyu', 'xyu'], ょ: ['lyo', 'xyo'], ゎ: ['lwa', 'xwa'],
   // 長音
   ー: ['-'],
   // 句読点・記号（非 Shift キー）
@@ -98,8 +98,8 @@ function edgesFrom(reading, i) {
     for (const e of edgesFrom(reading, i + 1)) {
       if (isConsonant(e.token[0])) edges.push({ token: e.token[0] + e.token, next: e.next });
     }
-    // 単独表記（xtu/ltu 系）
-    for (const t of ['xtu', 'ltu', 'xtsu', 'ltsu']) edges.push({ token: t, next: i + 1 });
+    // 単独表記（ltu/xtu 系）
+    for (const t of ['ltu', 'xtu', 'ltsu', 'xtsu']) edges.push({ token: t, next: i + 1 });
     return edges;
   }
 
