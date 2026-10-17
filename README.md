@@ -9,6 +9,7 @@
 - **日本語（長文）** … 青空文庫の段落をローマ字入力で練習。打ち方は自由（し = `si`/`shi`、ん = `nn`/`n` など、正しいローマ字ならどれでも正解）。
 - **C#** … dotnet/runtime スタイルのコードを直打ち。
 - **TypeScript** … standardjs スタイルのコードを直打ち。
+- **なんでもあり（OSS）** … 有名な言語・フレームワーク・ツール・ライブラリ（Go / CPython / React / VS Code / ripgrep / curl / nginx / Guava / Rails など 24 プロジェクト）の小さな関数を、言語を混ぜて直打ち。
 
 いずれも **IME をオフ（直接入力）** にして遊んでください。コードモードは **US 配列** 前提です。
 
@@ -24,8 +25,18 @@ python3 -m http.server 8000
 日本語モードのお題テキストの出典は **青空文庫（パブリックドメイン）** です。
 太宰治『猿ヶ島』／芥川龍之介『藪の中』／夏目漱石『坊っちゃん』『夢十夜』『彼岸過迄』／夢野久作『きのこ会議』『瓶詰地獄』。
 
+加えて試験的に、**Wikipedia 日本語版**の「秀逸な記事」から連続した一節を抜粋しています（`js/words-wikipedia.js`）。
+これらの本文は [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.ja) で配布します。読み（打鍵用のひらがな）は抜粋時に付け加えたものです。
+
+- 『[蜂蜜](https://ja.wikipedia.org/w/index.php?title=%E8%9C%82%E8%9C%9C&oldid=111394705)』「採集」節（[履歴](https://ja.wikipedia.org/w/index.php?title=%E8%9C%82%E8%9C%9C&action=history)）
+- 『[深海魚](https://ja.wikipedia.org/w/index.php?title=%E6%B7%B1%E6%B5%B7%E9%AD%9A&oldid=110754348)』「概要」節（[履歴](https://ja.wikipedia.org/w/index.php?title=%E6%B7%B1%E6%B5%B7%E9%AD%9A&action=history)）
+- 『[チンドン屋](https://ja.wikipedia.org/w/index.php?title=%E3%83%81%E3%83%B3%E3%83%89%E3%83%B3%E5%B1%8B&oldid=110987058)』「概要」節（[履歴](https://ja.wikipedia.org/w/index.php?title=%E3%83%81%E3%83%B3%E3%83%89%E3%83%B3%E5%B1%8B&action=history)）
+- 『[オーロラ](https://ja.wikipedia.org/w/index.php?title=%E3%82%AA%E3%83%BC%E3%83%AD%E3%83%A9&oldid=111353265)』「名称」節（[履歴](https://ja.wikipedia.org/w/index.php?title=%E3%82%AA%E3%83%BC%E3%83%AD%E3%83%A9&action=history)）
+
+「なんでもあり（OSS）」モードのお題コードは、各 OSS のソースから抜き出したものです。ライセンス本文は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)、関数ごとの抜き出し元は `js/oss-words.js` にあります。
+
 コードモード（C# / TypeScript）のお題コードは **Claude Code（Opus 4.8）** で生成したものです。
 
 ## ライセンス
 
-ソースコードは [MIT License](LICENSE) です。お題テキスト（青空文庫）は元々パブリックドメインです。
+ソースコードは [MIT License](LICENSE) です。お題テキスト（青空文庫）は元々パブリックドメインです。Wikipedia からの抜粋は CC BY-SA 4.0、OSS から抜き出したコードは各ライセンス（[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)）に従います。

@@ -3,6 +3,7 @@
 //   TS  … standardjs（2スペース / セミコロンなし / シングルクォート / 宣言の括弧前スペース / ===）。
 // 各要素 { title, code }。行数は packFunctions が code から算出する。
 import { shuffled } from './words.js';
+import { OSS_FUNCS } from './oss-words.js';
 
 export const CSHARP_FUNCS = [
   {
@@ -1123,12 +1124,14 @@ function minOf (a, b) {
 export const CODE_POOLS = {
   csharp: CSHARP_FUNCS,
   typescript: TS_FUNCS,
+  any: OSS_FUNCS, // 言語混在
 };
 
 // 言語の表示名
 export const LANG_LABELS = {
   csharp: 'C#',
   typescript: 'TypeScript',
+  any: 'なんでもあり（OSS）',
 };
 
 function lineCount(code) {

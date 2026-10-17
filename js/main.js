@@ -56,7 +56,7 @@ let index = 0; // 何問目か＝何作品目か（0始まり）
 let sentenceIndex = 0; // 日本語モード: 作品内で何文目か（0始まり）
 let phase = 'start'; // 'start' | 'play' | 'result'
 let mode = 'romaji'; // 'romaji' | 'code'
-let lang = null; // 'csharp' | 'typescript'（code 時）
+let lang = null; // 'csharp' | 'typescript' | 'any'（code 時）
 let lastMode = 'romaji'; // リトライ用
 let lastLang = null;
 
@@ -100,7 +100,10 @@ function loadWord() {
   if (mode === 'code') {
     const w = queue[index];
     engine.setText(w.code);
-    el.codeTitle.textContent = `${LANG_LABELS[lang]} — ${w.title}`;
+    // OSS のお題は言語と出典を表示する
+    el.codeTitle.textContent = w.repo
+      ? `${w.lang} — ${w.repo}: ${w.title}`
+      : `${LANG_LABELS[lang]} — ${w.title}`;
     updateView();
     updateGuide();
     updateLiveAcc();
