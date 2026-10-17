@@ -3,7 +3,8 @@
 ## このプロジェクト
 e-typing（https://www.e-typing.ne.jp/）の「タイピング練習ゲーム部分」だけの Web クローン。
 日本語ローマ字入力（**青空文庫の長文を作品単位＝連続段落で出題**）。会員機能・スコアランキング等は対象外。
-加えて、オリジナルにはない **プログラミング言語（C# / TypeScript）コード直打ちモード** を持つ。
+加えて、オリジナルにはない **プログラミング言語（C# / TypeScript）コード直打ちモード** と、
+有名 OSS の小さな関数を言語混在で出す **「なんでもあり（OSS）」モード** を持つ。
 
 - **技術**: 素の HTML/CSS/JS（ビルドツールなし、ES Modules）。依存ライブラリなし。
 - **方針**: KISS / YAGNI。指示されたことだけ実装し、余計な機能追加・リファクタはしない。
@@ -11,7 +12,11 @@ e-typing（https://www.e-typing.ne.jp/）の「タイピング練習ゲーム部
 
 ## 構成
 ```
-index.html        … スタート/プレイ/結果の3画面（お題/読み/ローマ字/キーボード/両手/明転）
+index.html        … モード選択（トップ）。各モードは別ページ:
+japanese/ program/c-sharp/ program/typescript/ program/any/
+                  … index.html が body の data-mode / data-lang で開始モードを決める（プレイ/結果の2画面）。
+                    上部ヘッダーの「← モード選択に戻る」はプレイ中だけ confirm で確認（main.js）
+THIRD_PARTY_NOTICES.md … OSS お題の抜き出し元ごとのライセンス本文
 css/styles.css    … 白基調・オレンジ(#f0a020)アクセント、3画面のスタイル
 js/
   layout.js       … KEY_ROWS/KEY_TO_FINGER（JIS。renderKeyboard の既定値だが現状どのモードも US を使用）
@@ -23,7 +28,9 @@ js/
   code-engine.js  … コード直打ちエンジン（romaji.js と同一IF、カーソル方式）＋セルフテスト
   words.js        … 日本語お題 {author, title, sentences:[{display,reading}]}（1作品＝文の配列。文は「。」＋直後の閉じ括弧で区切り）
                     ＋ shuffled() ＋ packPassages()（作品単位・display合計400字基準で {source, sentences} を返す）
-  code-words.js   … コードお題 {title, code}（C#/TS 各約38問）＋ packFunctions()
+  words-wikipedia.js … Wikipedia「秀逸な記事」の抜粋（CC BY-SA 4.0。PASSAGES に展開して混ぜる）
+  code-words.js   … コードお題 {title, code}（C#/TS 各約38問）＋ CODE_POOLS（any=OSS_FUNCS）＋ packFunctions()
+  oss-words.js    … OSS お題 {lang, title, repo, license, url, code}
   stats.js        … 集計・スコア・ランク・苦手キー/指（createStats(meta) で言語を保持）
   main.js         … ゲーム制御（3画面、mode='romaji'|'code'、keydown 連動）
 ```
@@ -35,6 +42,7 @@ js/
 - **日本語モードは「青空文庫の作品単位・文ごと進行」練習に置き換え済み・動作確認済み。**
   本文は全文表示で**今タイプしている文だけ黒・他は淡色**、本文枠は約6行スクロール（現在文へ追従）。
   出典は枠の上、入力中の文（読み＋ローマ字）は枠の下に分離表示。
+- **なんでもあり（OSS）モード**（`/program/any/`）と、Wikipedia 抜粋の日本語お題も実装済み。
 - セルフテスト（romaji 46件 / code-engine 14件）PASS、ブラウザ（chrome-devtools MCP）で検証済み。
 
 ## コードモードの確定仕様（重要）
@@ -46,15 +54,36 @@ js/
 - **Shift/記号の可視化**: Shift は**ベースキーと逆の手**（左手キー→右Shift、右手キー→左Shift）。
   記号入力時は **ベースキー＋Shiftキーの2点灯**、指も **ベース指＋逆手小指の2本**点灯（`US_CHAR_TO_KEY` / `shiftKeyFor` / `shiftFingerFor`）。
   US キーボードは記号を2段ラベルで表示、Shift/Enter/Space は幅広キー（`.keyboard.is-us`）。
-- **1テストの構成**: 関数を詰め合わせ**合計が40行を超えたら**停止（`packFunctions`）。**1テスト内で言語は混在させない**。
+- **1テストの構成**: 関数を詰め合わせ**合計が40行を超えたら**停止（`packFunctions`）。
+  C# / TS は**1テスト内で言語を混在させない**。なんでもあり（OSS）だけは混在させる。
 - **お題のスタイル厳守**（`code-words.js`）:
   - C# = dotnet/runtime（4スペース / **Allman ブレース** / 言語キーワード / PascalCase / `var` は new・キャスト時のみ）。
   - TS = standardjs（2スペース / **セミコロンなし** / **シングルクォート** / 宣言の括弧前スペース `function foo (n)` / `===`）。
 - **結果**: `createStats({mode, lang})` で言語を保持し、結果画面に「モード: C#/TypeScript」を表示。
+- **フォント**: コード本体（`.code-view`）だけ Source Code Pro・16px（各 program ページで Google Fonts を読む）。
+  UA の `code { font-family: monospace }` が継承を切るので `.code-view code { font-family: inherit }` が要る。
+
+## なんでもあり（OSS）モードの確定仕様（重要）
+- **採用基準**: GitHub スター **5k 以上**、ライセンスは MIT / BSD / ISC / Apache-2.0 / PSF / curl / パブリックドメインなど許容系のみ。
+  **GPL / AGPL / LGPL / MPL / SSPL / EPL など（弱いものも含む）コピーレフト系は使わない**。
+  GitHub API の `license` が NOASSERTION / null のときはライセンス本文を読んで判断する。
+  リポジトリの一部だけが別ライセンスのことがある（例: ランタイムだけ LGPL）ので、抜き出すファイルに効く条件を確かめる。
+  言語・フレームワークに限らず、一般のツール（ripgrep, curl, nginx…）や有名ライブラリ（Requests, Guava…）も対象。Lisp 系（Doom Emacs, Racket）も少数入れている。
+- **抜き出し方**: 1 プロジェクト 1〜2 関数・数行〜20 行程度。コメントと docstring は除去、インデントは関数単位で詰め、
+  行中の連続空白・タブは 1 スペースに（行中タブは打てない）。それ以外は原文のまま。ASCII のみ。
+  コメントに別作者の帰属表示がある関数は使わない（除去すると表示が消える）。
+- **ライセンスは内部だけに持つ**: 各要素の `license` / `url`（コミット固定パーマリンク）と `THIRD_PARTY_NOTICES.md`。
+  画面のタイトルは `${lang} — ${repo}: ${title}` でライセンスは出さない。
+- 追加したら全関数をコードエンジンに通し、全文字が `US_CHAR_TO_KEY` で引けることを確認する。
 
 ## 日本語モードの確定仕様（重要）
 - **目的**: 会話文（`「」`）と `、。` を含む**長文**の練習。お題は**青空文庫**（パブリックドメイン）の**原文の連続した一節**。
-  出典は太宰治『猿ヶ島』／芥川龍之介『藪の中』／夏目漱石『夢十夜』『彼岸過迄』『坊っちゃん』／夢野久作『空を飛ぶパラソル』『瓶詰地獄』（`words.js` の `PASSAGES`）。
+  作品一覧は `words.js` 冒頭のコメントと README の「お題テキストの出典」が持つ。
+  青空文庫の作品は**パブリックドメインでも CC ライセンスでもよい**（CC は ND・NC を含まないもの。読みを付けるのが改変に当たるため ND は不可）。
+  加えて試験的に **Wikipedia「秀逸な記事」の抜粋**（`words-wikipedia.js`、CC BY-SA 4.0）を混ぜている。
+  Wikipedia はルビが無いので **reading は手で付けた読み**（記事中の括弧書きの読みがあればそれに従う）。
+  ライセンスは各作品の `license` に内部でだけ持ち、出典表示（`Wikipedia 『…』 より`）には出さない。
+  CC BY-SA の本文は MIT のコードと別ファイルに分け、ファイル冒頭と README にライセンスと版（oldid）を書く。
 - **データ構造**: `PASSAGES` は `{author, title, sentences:[{display,reading}]}` の配列（1作品1要素）。
   `sentences` は本文を**「。」＋直後の閉じ括弧（`」』）`）で区切った「文」**の配列で、各文が `{display, reading}` を持つ。
   会話文は途中の「。」でも文が割れる（表示は連結するので引用符は正しく囲む）。
@@ -81,6 +110,8 @@ js/
   **ベースキー＋逆手 Shift の2点灯／ベース指＋逆手小指の2指**（コードモードと同じ、`US_CHAR_TO_KEY`/`shiftKeyFor`/`shiftFingerFor`）。
 - **将来アルファベット混在**が必要になったら「英字は小文字化せず保持・読みに英字を持たせる」拡張で対応（現状は未対応＝YAGNI）。
 - **結果**: 結果画面に「モード: 日本語（長文）」を表示。
+- **フォント**: 問題文（本文 `.display`・読み `.reading`）だけ Zen Kaku Gothic New（本文は太さ 500）。
+  出典・ローマ字などほかの要素は既存のフォントのまま。フォントは japanese ページでだけ Google Fonts から読む。
 
 ## ローマ字判定の確定仕様（重要）
 - **両対応**: 正しいローマ字ならどの打ち方でも正解にする（し=`si`/`shi`/`ci`、つ=`tu`/`tsu`、
@@ -123,6 +154,8 @@ cd /home/hikaru/typing && python3 -m http.server 8000
   '--remote-allow-origins=*' '--user-data-dir=C:\ChromeDebug' &
 # 接続確認: http://localhost:9222/json/version がJSONを返せばOK
 ```
+- 外部から見るときは `python3 -m http.server 3000 --bind 0.0.0.0` で配信する（3000 番を外へ公開している）。
+  sandbox の中で待ち受けたサーバーには外から届かないので、起動だけは sandbox の外で行う。
 - 確認は chrome-devtools MCP: `navigate_page http://localhost:8000` →
   `take_screenshot`（/tmp配下に保存）→ `list_console_messages`。
 - favicon.ico の 404 は無害（既知）。
