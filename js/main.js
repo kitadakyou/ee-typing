@@ -7,6 +7,8 @@ import { createCodeEngine } from './code-engine.js';
 import { PASSAGES, packPassages } from './words.js';
 import { CODE_POOLS, LANG_LABELS, packFunctions } from './code-words.js';
 import { createStats, rankReason } from './stats.js';
+import { saveRun, keyInsights } from './history.js';
+import { renderTrends, renderKeyNotes, renderCumulative } from './history-view.js';
 import {
   US_KEY_ROWS,
   US_CHAR_TO_KEY,
@@ -230,10 +232,12 @@ function finishSet() {
   stats.finish();
   highlightKeys([]);
   highlightFinger(null);
-  showResult(stats.summary());
+  const s = stats.summary();
+  showResult(s, saveRun(s));
 }
 
-function showResult(s) {
+// runs = 同じモードの履歴（最後が今回）
+function showResult(s, runs) {
   const langText = s.mode === 'code' ? LANG_LABELS[s.lang] : '日本語（長文）';
   el.resultLang.textContent = `モード: ${langText}`;
   document.getElementById('result-rank').textContent = s.rank;
@@ -252,7 +256,17 @@ function showResult(s) {
   document.getElementById('result-miss').textContent = s.miss;
   renderWeakList(document.getElementById('weak-keys'), s.weakKeys, '回');
   renderWeakList(document.getElementById('weak-fingers'), s.weakFingers, '回');
+  const insights = keyInsights(runs);
+  renderKeyNotes(document.getElementById('key-better'), document.getElementById('key-worse'), insights);
+  renderCumulative(document.getElementById('cum-keys'), insights.cumulative);
   showScreen('result');
+  // グラフは表示幅で描くので、結果画面を出してから描く
+  renderTrends(
+    document.getElementById('history'),
+    document.getElementById('history-note'),
+    document.getElementById('history-grid'),
+    runs,
+  );
 }
 
 function renderWeakList(ul, items, unit) {
@@ -299,7 +313,7 @@ document.addEventListener('keydown', (e) => {
 
   const res = engine.input(ch);
   if (res.ok) {
-    stats.addCorrect();
+    stats.addCorrect(ch);
     updateView();
     updateLiveAcc();
     if (res.finished) {

@@ -73,15 +73,36 @@
         <div class="stat"><span class="stat-num" id="result-correct">0</span><span class="stat-cap">正打数</span></div>
         <div class="stat"><span class="stat-num" id="result-miss">0</span><span class="stat-cap">ミス数</span></div>
       </div>
+      <section id="history" class="history" aria-label="これまでの推移" hidden>
+        <div class="history-head">
+          <h3 class="history-title">これまでの推移</h3>
+          <span id="history-note" class="history-note"></span>
+        </div>
+        <div id="history-grid" class="history-grid"></div>
+      </section>
+      <div id="key-better" class="key-note is-better" hidden>
+        <p class="key-note-head">上達しているキー</p>
+        <ul class="key-note-list"></ul>
+        <p class="key-note-desc">直近 5 回より前に苦手なキー上位 5 に入っていたキーについて、それまでのミス率と直近 5 回のミス率を比べています。半分以下で「克服」、8 割以下で「下がっています」。</p>
+      </div>
+      <div id="key-worse" class="key-note is-worse" hidden>
+        <p class="key-note-head">苦手になってきているキー</p>
+        <ul class="key-note-list"></ul>
+        <p class="key-note-desc">それまでのミス率と直近 5 回のミス率を比べ、1.5 倍以上で、直近のミス率が 3% 以上のキー。</p>
+      </div>
       <div class="weak-wrap">
         <div class="weak-col">
-          <h3 class="weak-head">苦手なキー</h3>
+          <h3 class="weak-head">今回の苦手なキー</h3>
           <ul id="weak-keys" class="weak-list"></ul>
         </div>
         <div class="weak-col">
-          <h3 class="weak-head">苦手な指</h3>
-          <ul id="weak-fingers" class="weak-list"></ul>
+          <h3 class="weak-head">累計の苦手なキー <span class="weak-sub">ミス率</span></h3>
+          <ul id="cum-keys" class="weak-list"></ul>
         </div>
+      </div>
+      <div class="finger-row">
+        <h3 class="weak-head">今回の苦手な指</h3>
+        <ul id="weak-fingers" class="finger-list"></ul>
       </div>
       <button id="btn-retry" class="btn-primary" type="button">もう一度（または Space / Enter）</button>
     </section>

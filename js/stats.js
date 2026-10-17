@@ -1,5 +1,5 @@
 // 集計・スコア・苦手キー/指。
-import { KEY_TO_FINGER, FINGER_NAMES } from './layout.js';
+import { KEY_TO_FINGER, FINGER_NAMES, US_CHAR_TO_KEY } from './layout.js';
 
 export function createStats(meta = {}) {
   let correct = 0;
@@ -9,15 +9,18 @@ export function createStats(meta = {}) {
   const keyMiss = {}; // key文字 -> ミス回数
   const fingerMiss = {}; // 指コード -> ミス回数
   const keyFinger = {}; // key文字 -> 指コード
+  const keyTotal = {}; // key文字 -> 打鍵数（正打＋ミス）。ミス率の分母
 
   // 最初の打鍵で計測開始
   function ensureStarted() {
     if (startTime === null) startTime = performance.now();
   }
 
-  function addCorrect() {
+  // key = 実際に打った文字
+  function addCorrect(key) {
     ensureStarted();
     correct++;
+    keyTotal[key] = (keyTotal[key] || 0) + 1;
   }
 
   // 誤打。expectedKey = engine.expectedKey()（canonical な期待キー1つ）。
@@ -27,6 +30,7 @@ export function createStats(meta = {}) {
     miss++;
     if (expectedKey) {
       keyMiss[expectedKey] = (keyMiss[expectedKey] || 0) + 1;
+      keyTotal[expectedKey] = (keyTotal[expectedKey] || 0) + 1;
       const fg = finger || KEY_TO_FINGER[expectedKey];
       if (fg) {
         fingerMiss[fg] = (fingerMiss[fg] || 0) + 1;
@@ -42,23 +46,21 @@ export function createStats(meta = {}) {
   // 集計結果を算出して返す。
   function summary() {
     const elapsedMs = (endTime ?? performance.now()) - (startTime ?? performance.now());
-    const minutes = Math.max(elapsedMs / 60000, 1 / 60000); // 0除算回避
-    const total = correct + miss;
-    const accuracy = total > 0 ? correct / total : 0;
-    const kpm = correct / minutes; // 1分あたり正打鍵
-    const wpm = correct / 5 / minutes; // 標準的な単語換算
-    const score = Math.round(kpm * Math.pow(accuracy, 3));
-    const rank = rankOf(score);
+    const seconds = elapsedMs / 1000;
+    const { accuracy, kpm, wpm, score } = measure(correct, miss, seconds);
+    const keys = {};
+    for (const [k, n] of Object.entries(keyTotal)) keys[k] = [n, keyMiss[k] || 0];
 
     return {
       correct,
       miss,
-      seconds: elapsedMs / 1000,
+      seconds,
       accuracy,
-      kpm: Math.round(kpm),
-      wpm: Math.round(wpm),
+      kpm,
+      wpm,
       score,
-      rank,
+      rank: rankOf(score),
+      keys, // { key文字: [打鍵数, ミス数] }
       mode: meta.mode || 'romaji',
       lang: meta.lang || null,
       weakKeys: topEntries(keyMiss, 5).map((e) => ({
@@ -70,6 +72,20 @@ export function createStats(meta = {}) {
   }
 
   return { addCorrect, addMiss, finish, summary };
+}
+
+// 正打数・ミス数・秒数から、正確率・KPM・WPM・スコアを出す（履歴の再計算にも使う）。
+export function measure(correct, miss, seconds) {
+  const minutes = Math.max(seconds / 60, 1 / 60000); // 0除算回避
+  const total = correct + miss;
+  const accuracy = total > 0 ? correct / total : 0;
+  const kpm = correct / minutes; // 1分あたり正打鍵
+  return {
+    accuracy,
+    kpm: Math.round(kpm),
+    wpm: Math.round(correct / 5 / minutes), // 標準的な単語換算
+    score: Math.round(kpm * Math.pow(accuracy, 3)),
+  };
 }
 
 // 高い順。最後の E は下限なし。
@@ -117,10 +133,16 @@ function topEntries(map, n) {
 }
 
 // 表示用のキーラベル（空白・改行は読めるように）。
-function keyLabel(key) {
+export function keyLabel(key) {
   if (key === ' ') return 'Space';
   if (key === '\n') return 'Enter';
   return key.length === 1 ? key.toUpperCase() : key;
+}
+
+// キー文字の担当指の表示名（「右 中指」など）。引けなければ null。
+export function fingerNameOf(key) {
+  const fg = US_CHAR_TO_KEY[key]?.finger || KEY_TO_FINGER[key];
+  return fg ? FINGER_NAMES[fg] : null;
 }
 
 function topFingers(map, n) {
