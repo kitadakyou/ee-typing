@@ -312,6 +312,13 @@ document.addEventListener('keydown', (e) => {
 // 結果画面のもう一度ボタン
 el.btnRetry.addEventListener('click', () => startSet(lastMode, lastLang));
 
+// ヘッダーの「戻る」。プレイ中は途中経過が消えるので確認する
+document.querySelector('.site-home').addEventListener('click', (e) => {
+  if (phase === 'play' && !window.confirm('練習を中断して、モード選択に戻りますか？')) {
+    e.preventDefault();
+  }
+});
+
 // ---- 自動開始 ----
 // body の data-mode / data-lang で開始モードを決める（URL ルーティング駆動）。
 const bodyMode = document.body.dataset.mode;
